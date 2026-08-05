@@ -1,0 +1,26 @@
+# Sentaurus TCAD binary output files (large, auto-generated — do NOT commit)
+*.tdr
+*.log
+*.out
+*.err
+*.plt_old
+*.bak
+
+# SWB auto-generated folders
+[0-9]_*/
+n[0-9]*/
+p[0-9]*/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Results folder — store locally, not in git
+results/*.png
+results/*.csv
+
+# OS files
+.DS_Store
+Thumbs.db
