@@ -66,4 +66,47 @@ You would use **interface refinement** (`sdedr:define-refinement-interface`) bet
 
 ---
 
+---
+
+## Session 1 — SDevice (Sentaurus Device Solver)
+
+### Q8: What are the 5 mandatory sections in every SDevice script and what does each one do?
+
+**Answer:**
+- `File { }` — tells SDevice which mesh file to read as input and what to name the output files (.tdr for 2D field data, .plt for I-V curve data).
+- `Electrode { }` — lists every metal contact defined in SDE and sets its starting voltage. The names must exactly match the contact names from SDE.
+- `Physics { }` — selects which physical models to activate (mobility models, recombination models, statistics). Only listed models run — everything else is ignored.
+- `Math { }` — configures the numerical Newton solver: how many iterations, when to declare convergence, which linear algebra solver to use.
+- `Solve { }` — specifies what simulations to run, in what order, and with what voltage targets. This is the "control script" that drives the entire simulation.
+
+---
+
+### Q9: Why does SDevice solve Poisson alone first, THEN solve all 3 equations together?
+
+**Answer:**
+Starting all 3 equations simultaneously from a zero-field initial guess is a very hard numerical problem — the Newton solver fails to converge because the starting point is too far from the true solution. The trick is to first solve only Poisson's equation, which is a simpler problem with a guaranteed solution. This gives you a physically reasonable potential distribution (built-in potential, depletion region). This Poisson-only solution is then used as the starting point (initial guess) for the full 3-equation coupled solve. With a good initial guess, the coupled solve converges in a few iterations. This two-step approach is the standard industry practice in TCAD.
+
+---
+
+### Q10: What is SRH recombination and why does it dominate in Silicon?
+
+**Answer:**
+Shockley-Read-Hall (SRH) recombination is a two-step process. An electron gets captured by a trap (defect energy level in the bandgap), and then a hole gets captured by the same trap — or vice versa. The trap acts as a stepping stone for the electron-hole recombination. Silicon has an indirect bandgap, meaning a direct electron-to-hole recombination requires simultaneous emission of both a photon AND a phonon — this is very unlikely. So in Si, carriers almost always recombine via traps (SRH). In GaAs (direct bandgap), carriers can recombine directly by emitting a photon, making radiative recombination dominant and SRH less important.
+
+---
+
+### Q11: What does the adaptive stepping in Quasistationary actually do?
+
+**Answer:**
+Instead of sweeping voltage in fixed steps (e.g., always 10 mV), adaptive stepping adjusts the step size dynamically based on how hard the solver is working. If it converges easily in few iterations, the step size is multiplied by `Increment` (1.5×) — the solver takes larger jumps, saving time. If it fails to converge, the step is divided by `Decrement` (3×) and retried from the last good point — the solver takes smaller steps through the difficult region. This is critical in the forward bias "knee" region (~0.5–0.7 V for Si) where current changes by many orders of magnitude over a small voltage range. Fixed stepping there would either be too coarse (inaccurate) or too fine everywhere (very slow).
+
+---
+
+### Q12: Why do we load the equilibrium state before the reverse bias sweep?
+
+**Answer:**
+After the forward bias sweep ends at +1.0 V, the device is in a high injection state — large amounts of minority carriers have been injected across the junction. If we immediately try to sweep to -20 V from this state, the solver must jump from a +1.0 V forward bias solution all the way to -20 V reverse bias in one step. This enormous jump will fail to converge. By loading the saved equilibrium state (0 V, no injection), we give the solver a clean, physically correct starting point for the reverse sweep. Each stage of a Solve block must start from a physically sensible state.
+
+---
+
 *— More Q&As will be added each session —*
