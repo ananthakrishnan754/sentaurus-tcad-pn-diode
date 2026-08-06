@@ -201,17 +201,20 @@ Total expected run time: 15–30 minutes for all 4 materials.
 
 ---
 
-## Step 10 — Collect .plt Files for Python Analysis
+## Step 10 — At College PC: Push the .plt Files to GitHub
 
-After all 4 simulations finish:
+After all 4 simulations finish, do this AT THE COLLEGE PC:
 
-1. In the SWB folder, SWB creates output subfolders:
-   - `n1_Silicon/` → contains `MaterialDiode_des.plt`
-   - `n2_Germanium/` → contains `MaterialDiode_des.plt`
-   - `n3_GaAs/` → contains `MaterialDiode_des.plt`
-   - `n4_SiC4H/` → contains `MaterialDiode_des.plt`
+**1. Find the SWB output folders** (SWB creates these automatically):
+```
+sentaurus-tcad-pn-diode/
+├── n1_Silicon/MaterialDiode_des.plt
+├── n2_Germanium/MaterialDiode_des.plt
+├── n3_GaAs/MaterialDiode_des.plt
+└── n4_SiC4H/MaterialDiode_des.plt
+```
 
-2. Copy each .plt file to your `results/` folder with material-specific names:
+**2. Copy .plt files into the results/ folder with clear names:**
 ```bash
 cp n1_Silicon/MaterialDiode_des.plt results/Si_des.plt
 cp n2_Germanium/MaterialDiode_des.plt results/Ge_des.plt
@@ -219,20 +222,60 @@ cp n3_GaAs/MaterialDiode_des.plt results/GaAs_des.plt
 cp n4_SiC4H/MaterialDiode_des.plt results/SiC4H_des.plt
 ```
 
-3. Run the Python analysis:
+**3. Push to GitHub from college PC:**
 ```bash
-cd python/
-python3 compare_materials.py
-python3 extract_breakdown.py
-```
-
-4. Commit and push results:
-```bash
-cd ..
-git add results/*.png results/*.csv
-git commit -m "Day 2: Add simulation results for all 4 materials"
+git add results/
+git commit -m "Day 2: Simulation .plt results for all 4 materials"
 git push
 ```
+
+That's ALL you do at the college PC for Step 10.
+The Python analysis runs at HOME.
+
+---
+
+## Step 11 — At HOME PC: Pull and Run Python Analysis
+
+After you get home, open your terminal:
+
+**1. Pull the simulation results:**
+```bash
+cd "/home/ananthakrishnan/TCAD project"
+git pull
+```
+
+**2. Verify the .plt files arrived:**
+```bash
+ls results/
+# Should show: Si_des.plt  Ge_des.plt  GaAs_des.plt  SiC4H_des.plt
+```
+
+**3. Run the comparison analysis:**
+```bash
+venv/bin/python python/compare_materials.py
+```
+Output: `results/iv_overlay.png` + `results/comparison_table.csv`
+
+**4. Run the breakdown analysis:**
+```bash
+venv/bin/python python/extract_breakdown.py
+```
+Output: `results/breakdown_analysis.png`
+
+**5. Run the band diagram script (already tested, works without simulation):**
+```bash
+venv/bin/python python/plot_band_diagram.py
+```
+Output: `results/band_diagrams.png`
+
+**6. Push the generated plots back to GitHub:**
+```bash
+git add results/
+git commit -m "Day 2: Python analysis — comparison plots and table"
+git push
+```
+
+Now all your figures are on GitHub and ready for the report.
 
 ---
 

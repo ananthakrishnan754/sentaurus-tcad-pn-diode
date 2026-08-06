@@ -6,7 +6,7 @@
 *.plt_old
 *.bak
 
-# SWB auto-generated folders
+# SWB auto-generated run folders (huge binary output, not needed in git)
 [0-9]_*/
 n[0-9]*/
 p[0-9]*/
@@ -21,10 +21,10 @@ __pycache__/
 *.pyo
 .env
 
-# Results folder — store locally, not in git
-results/*.png
-results/*.csv
-
 # OS files
 .DS_Store
 Thumbs.db
+
+# NOTE: results/*.plt files ARE committed (simulation data for Python)
+# NOTE: results/*.png and results/*.csv ARE committed (final output figures)
+# Nothing in results/ is blocked — we want everything there on GitHub
