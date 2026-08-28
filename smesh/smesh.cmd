@@ -79,29 +79,24 @@
 
 ; ============================================================
 ; SECTION 3: INTERFACE REFINEMENT
-; At the boundary between P_Region and N_Region (the PN
-; junction at y = 0.5 µm), the doping changes abruptly.
-; This creates a very steep gradient in the electrostatic
-; potential. We must ensure extra-fine mesh right at this
-; interface, even finer than the refinement window in SDE.
+; Boundary 1: P_Region / I_Region interface at y = 0.2 µm
+; Boundary 2: I_Region / N_Region interface at y = 0.8 µm
 ; ============================================================
 
 (sdedr:define-refinement-interface
-    "JunctionInterface"          ; name for this interface rule
+    "PI_JunctionInterface"       ; P-I junction interface
     "P_Region"                   ; first region
+    "I_Region"                   ; second region
+    0.005                        ; max element size at interface = 5 nm
+    0.002)                       ; min element size at interface = 2 nm
+
+(sdedr:define-refinement-interface
+    "IN_JunctionInterface"       ; I-N junction interface
+    "I_Region"                   ; first region
     "N_Region"                   ; second region
     0.005                        ; max element size at interface = 5 nm
     0.002)                       ; min element size at interface = 2 nm
 
-; WHY IS THIS NEEDED SEPARATELY FROM SDE'S REFINEMENT WINDOW?
-; The SDE refinement window covers a 0.2 µm band around the
-; junction (from y=0.4 to y=0.6). That gives 10 nm mesh
-; WITHIN that band.
-; But right at the interface line itself (y = 0.5 µm exactly),
-; the potential gradient is steepest. We want the mesh nodes
-; packed even more tightly — at 2 to 5 nm — at that exact line.
-; This interface refinement command does exactly that.
-; Think of it as "double-refined" mesh right at the junction.
 
 
 ; ============================================================

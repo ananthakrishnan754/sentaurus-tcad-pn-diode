@@ -1,0 +1,5 @@
+Material,Turn-on Voltage (V),I at 0.5V (A),I at 0.7V (A),I at 1.0V (A),I0 at -1V (A),Breakdown Voltage (V),Ideality Factor n
+Silicon,0.28,1.540e-10,1.908e-10,2.322e-10,2.234e-10,< -20V (not reached),24.63
+Germanium,0.005,3.448e-07,3.806e-07,4.118e-07,4.049e-07,< -20V (not reached),49.21
+GaAs,0.819,1.602e-13,9.492e-12,2.730e-08,N/A,< -20V (not reached),1.56
+4H-SiC,0.439,1.560e-09,2.149e-06,1.991e-04,N/A,< -20V (not reached),1.17

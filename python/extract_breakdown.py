@@ -33,26 +33,33 @@ COLORS = {
 }
 
 
+def parse_plt_file(filepath):
+    import re
+    with open(filepath, "r") as f:
+        content = f.read()
+    m = re.search(r"datasets\s*=\s*\[(.*?)\]", content, re.DOTALL)
+    if not m:
+        raise ValueError(f"No datasets block in {filepath}")
+    col_names = re.findall(r'"([^"]+)"', m.group(1))
+    n_cols = len(col_names)
+    dm = re.search(r"Data\s*\{(.*?)\}", content, re.DOTALL)
+    if not dm:
+        raise ValueError(f"No Data block in {filepath}")
+    vals = np.array([float(v) for v in
+                     re.findall(r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?",
+                                dm.group(1))])
+    if len(vals) % n_cols != 0:
+        raise ValueError(f"Data length {len(vals)} not divisible by {n_cols} cols in {filepath}")
+    n_rows = len(vals) // n_cols
+    import pandas as pd
+    return pd.DataFrame(vals.reshape(n_rows, n_cols), columns=col_names)
+
 def find_breakdown_voltage(V_rev, I_rev, threshold=1e-4):
-    """
-    Find the breakdown voltage by looking for where the reverse
-    current first exceeds a threshold (default 0.1 mA).
-    Returns the voltage at that point.
-
-    Method: look for the first point where |I| > threshold
-    AND the slope d|I|/dV is large (current rising steeply).
-    """
     abs_I = np.abs(I_rev)
-    V = np.abs(V_rev)  # work with positive values for clarity
-
-    # Simple threshold method
     above_threshold = np.where(abs_I > threshold)[0]
     if len(above_threshold) > 0:
-        # Voltage at breakdown (negative, since it's reverse)
-        bv = V_rev[above_threshold[0]]
-        return bv
-
-    return None  # breakdown not reached in sweep range
+        return V_rev[above_threshold[0]]
+    return None
 
 
 def compute_depletion_width(V_rev, Na, Nd, eps_r, material):
@@ -156,12 +163,11 @@ def main():
             continue
 
         try:
-            # Quick parse
-            data = np.loadtxt(plt_path, comments='#', skiprows=1)
-            if data.ndim == 1:
-                data = data.reshape(1, -1)
-            V = data[:, 0]
-            I = data[:, 1]
+            df = parse_plt_file(plt_path)
+            volt_col = [c for c in df.columns if "OuterVoltage" in c and "Anode" in c][0]
+            curr_col = [c for c in df.columns if "TotalCurrent" in c and "Anode" in c][0]
+            V = df[volt_col].values
+            I = df[curr_col].values
 
             # Only reverse bias
             rev_mask = V <= 0

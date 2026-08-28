@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCAD-Based Comparative Analysis of Semiconductor Photodiodes</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--text:#172033;--muted:#5c667a;--accent:#315efb;--accent2:#6b4eff;--border:#e2e7f0;--code:#f0f3f8}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:1100px;margin:auto;padding:32px 22px 60px}.hero{background:linear-gradient(135deg,#172554,#4338ca);color:#fff;padding:48px;border-radius:22px;margin-bottom:28px;box-shadow:0 12px 35px rgba(49,94,251,.18)}
+.hero h1{font-size:38px;line-height:1.15;margin:0 0 14px}.hero p{font-size:18px;opacity:.92;margin:0}.tag{display:inline-block;background:rgba(255,255,255,.14);padding:7px 12px;border-radius:999px;font-size:13px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin:20px 0;box-shadow:0 4px 14px rgba(20,30,55,.04)}
+h2{font-size:27px;margin-top:0;border-bottom:1px solid var(--border);padding-bottom:10px} h3{font-size:20px;color:#243b7a;margin-top:26px}
+p{margin:10px 0} ul,ol{padding-left:24px}.note{border-left:4px solid var(--accent);background:#f1f5ff;padding:16px 18px;border-radius:8px;margin:18px 0}.warning{border-left:4px solid #e09b00;background:#fff8e6;padding:16px 18px;border-radius:8px;margin:18px 0}
+.diagram{background:var(--code);padding:22px;border-radius:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;text-align:center;overflow:auto}
+table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:12px 14px;border:1px solid var(--border);text-align:left}th{background:#eef2ff;color:#233b7a}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:20px 0}.flow div{background:#f4f6fb;border:1px solid var(--border);padding:14px;border-radius:10px;text-align:center;font-weight:600}.arrow{text-align:center;font-size:24px;color:var(--accent)}
+.formula{font-family:Georgia,serif;background:#fafafa;border:1px solid var(--border);padding:15px;border-radius:10px;text-align:center;font-size:19px;margin:12px 0}
+.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:35px}@media(max-width:700px){.hero{padding:30px}.hero h1{font-size:29px}.card{padding:21px}}
+</style>
+</head>
+<body>
+<div class="container">
+<section class="hero">
+<div class="tag">TCAD • Semiconductor Devices • Optoelectronics</div>
+<h1>TCAD-Based Comparative Analysis of Semiconductor Photodiodes Using Si, Ge and GaAs</h1>
+<p>A structured project plan connecting TCAD simulation results with semiconductor material physics and optoelectronic applications.</p>
+</section>
+
+<section class="card">
+<h2>1. Project Overview</h2>
+<p>The project investigates how semiconductor material selection affects the electrical and optical characteristics of a PIN photodiode. The same basic device concept is simulated using silicon (Si), germanium (Ge), and gallium arsenide (GaAs), followed by a comparative analysis.</p>
+<div class="note"><strong>Core research question:</strong> How does the choice of semiconductor material affect photodiode performance, and how can material properties such as bandgap and band structure explain the observed differences?</div>
+</section>
+
+<section class="card">
+<h2>2. Device Structure</h2>
+<p>The recommended device is a PIN photodiode:</p>
+<div class="diagram">Incident Light
+     ↓↓↓
+┌───────────────┐
+│       P+      │
+├───────────────┤
+│               │
+│       I       │
+│               │
+│               │
+├───────────────┤
+│       N+      │
+└───────────────┘</div>
+<p>The lightly doped/intrinsic region provides an optical absorption and carrier-generation region. Geometry, doping strategy, contacts, and simulation conditions should be kept as comparable as reasonably possible across the three materials.</p>
+</section>
+
+<section class="card">
+<h2>3. Materials Under Investigation</h2>
+<table><thead><tr><th>Material</th><th>Approx. Bandgap</th><th>Bandgap Type</th><th>Main Relevance</th></tr></thead>
+<tbody><tr><td>Si</td><td>1.12 eV</td><td>Indirect</td><td>Electronics and photodetection</td></tr><tr><td>Ge</td><td>0.66 eV</td><td>Indirect</td><td>Longer-wavelength / infrared detection</td></tr><tr><td>GaAs</td><td>1.42 eV</td><td>Direct</td><td>Optoelectronics, LEDs, lasers and photodetection</td></tr></tbody></table>
+<div class="formula">E<sub>g</sub> = hc / λ<sub>c</sub> &nbsp;&nbsp; or approximately &nbsp;&nbsp; λ<sub>c</sub>(μm) ≈ 1.24 / E<sub>g</sub>(eV)</div>
+<p>This gives approximate cutoff wavelengths of about 1.1 μm for Si, 1.9 μm for Ge, and 0.87 μm for GaAs.</p>
+</section>
+
+<section class="card">
+<h2>4. TCAD Simulation Methodology</h2>
+<div class="flow"><div>Create PIN photodiode</div><div>Define mesh &amp; doping</div><div>Define contacts</div><div>Enable physical models</div><div>Equilibrium solution</div><div>Electrical &amp; optical sweeps</div><div>Extract results</div><div>Compare materials</div></div>
+<ol><li>Build the baseline PIN photodiode structure.</li><li>Define geometry, mesh, doping profiles, materials and contacts.</li><li>Choose appropriate semiconductor physics models.</li><li>Run equilibrium and dark electrical simulations.</li><li>Apply optical illumination and obtain illuminated characteristics.</li><li>Sweep optical power and wavelength.</li><li>Repeat the experiment for Si, Ge and GaAs.</li><li>Extract comparable plots and device-physics quantities.</li></ol>
+</section>
+
+<section class="card">
+<h2>5. Planned Experiments</h2>
+<h3>5.1 Dark I–V Characteristics</h3><p>Plot current versus voltage without illumination. Compare reverse leakage, forward behavior, and other relevant junction characteristics.</p>
+<h3>5.2 Illuminated I–V Characteristics</h3><p>Repeat the I–V simulation under different optical illumination levels and observe the increase in photogenerated current.</p>
+<h3>5.3 Photocurrent vs Optical Power</h3><p>Study how photocurrent changes with incident optical power and evaluate linearity and sensitivity.</p>
+<h3>5.4 Responsivity vs Wavelength</h3><p>This is one of the key experiments. Sweep wavelength and calculate responsivity:</p>
+<div class="formula">R(λ) = I<sub>ph</sub> / P<sub>opt</sub></div>
+<p>Compare the spectral response of Si, Ge and GaAs and relate the cutoff behavior to their bandgaps.</p>
+<h3>5.5 Internal Device Physics</h3><p>Extract TCAD distributions such as electric field, electron concentration, hole concentration, electrostatic potential, and—where supported reliably—generation and recombination rates.</p>
+<h3>5.6 Band Diagrams</h3><p>Compare energy-band diagrams and use them to connect band structure and bandgap with optical absorption and carrier generation.</p>
+</section>
+
+<section class="card">
+<h2>6. Expected Analysis Logic</h2>
+<div class="diagram">Material properties
+        ↓
+Band structure / bandgap
+        ↓
+Photon absorption condition
+        ↓
+Electron–hole pair generation
+        ↓
+Photocurrent and responsivity
+        ↓
+Device performance
+        ↓
+Application suitability</div>
+<p>The goal is not simply to report that the curves are different. Each observed difference should be linked to a physical property of the material or device.</p>
+</section>
+
+<section class="card">
+<h2>7. Important GaAs / LED Connection</h2>
+<div class="warning"><strong>Important:</strong> The photodiode simulation should not by itself be presented as proof that GaAs is the best LED material. The LED conclusion should be a separate application/physics discussion, optionally supported by a small GaAs LED simulation later.</div>
+<p>GaAs is a direct-bandgap semiconductor. In a light-emitting device, efficient radiative recombination is desirable:</p>
+<div class="formula">electron + hole → photon</div>
+<p>Direct-bandgap materials can support efficient optical transitions without the same momentum-conservation limitation associated with indirect-bandgap materials. This is a major reason GaAs is important in LEDs and semiconductor lasers.</p>
+<p>Therefore, the project can use the photodiode study to establish the material-property differences, then connect those differences to the separate requirements of light detection and light emission.</p>
+</section>
+
+<section class="card">
+<h2>8. Results Section Structure</h2>
+<ol>
+<li>Dark I–V comparison: Si vs Ge vs GaAs</li>
+<li>Illuminated I–V at multiple optical powers</li>
+<li>Photocurrent vs optical power</li>
+<li>Responsivity vs wavelength</li>
+<li>Electric-field distributions</li>
+<li>Electron and hole concentration profiles</li>
+<li>Generation/recombination distributions, if supported</li>
+<li>Energy-band diagrams</li>
+<li>Comparative summary of extracted parameters</li>
+</ol>
+</section>
+
+<section class="card">
+<h2>9. Comparative Summary Table</h2>
+<table><thead><tr><th>Parameter</th><th>Si</th><th>Ge</th><th>GaAs</th></tr></thead>
+<tbody><tr><td>Bandgap</td><td>Simulation/reference</td><td>Simulation/reference</td><td>Simulation/reference</td></tr><tr><td>Direct / indirect</td><td>Indirect</td><td>Indirect</td><td>Direct</td></tr><tr><td>Cutoff wavelength</td><td>Extract/estimate</td><td>Extract/estimate</td><td>Extract/estimate</td></tr><tr><td>Dark current</td><td>TCAD result</td><td>TCAD result</td><td>TCAD result</td></tr><tr><td>Photocurrent</td><td>TCAD result</td><td>TCAD result</td><td>TCAD result</td></tr><tr><td>Peak responsivity</td><td>TCAD result</td><td>TCAD result</td><td>TCAD result</td></tr><tr><td>Useful wavelength region</td><td>From results</td><td>From results</td><td>From results</td></tr><tr><td>Typical application</td><td>Electronics / photodetection</td><td>IR photodetection</td><td>Optoelectronics / LEDs / lasers</td></tr></tbody></table>
+<p><strong>Note:</strong> Simulation-dependent values should be populated only after the TCAD runs. Do not pre-fill them with assumed values.</p>
+</section>
+
+<section class="card">
+<h2>10. Final Conclusion Direction</h2>
+<p>The project should conclude that there is no universally “best” semiconductor. Material selection depends on the target application and the interaction between bandgap, band structure, carrier properties, optical absorption, and device architecture.</p>
+<ul><li><strong>Ge:</strong> its smaller bandgap makes it useful for longer-wavelength and infrared detection.</li><li><strong>Si:</strong> combines mature semiconductor technology with strong electrical-device integration and useful photodetection capability.</li><li><strong>GaAs:</strong> its direct bandgap and optical properties make it highly valuable for optoelectronic devices, including LEDs and lasers, while also providing useful photodetection behavior in its suitable wavelength range.</li></ul>
+</section>
+
+<section class="card">
+<h2>11. Recommended Project Story</h2>
+<p>The strongest presentation is:</p>
+<div class="diagram">Build one comparable PIN photodiode
+              ↓
+Swap Si → Ge → GaAs
+              ↓
+Run identical / controlled TCAD experiments
+              ↓
+Extract I–V, photocurrent, responsivity and internal physics
+              ↓
+Compare material-dependent behavior
+              ↓
+Explain differences using bandgap and band structure
+              ↓
+Connect material physics to real applications
+              ↓
+Optional extension: simulate a GaAs LED</div>
+<p>This turns the work from “three TCAD simulations with screenshots” into a coherent device-physics investigation.</p>
+</section>
+
+<section class="card">
+<h2>12. Optional Extension</h2>
+<p>If time permits, add a second TCAD device: a simple GaAs LED. This creates a clean contrast:</p>
+<div class="flow"><div><strong>Photodiode</strong><br>Absorption → detection</div><div><strong>LED</strong><br>Recombination → emission</div><div><strong>Common foundation</strong><br>Semiconductor band structure</div></div>
+<p>This extension would make the final GaAs discussion substantially stronger because the project would directly demonstrate both sides of semiconductor optoelectronics.</p>
+</section>
+
+<div class="footer">TCAD Photodiode Comparative Analysis • Project planning document</div>
+</div>
+</body>
+</html>

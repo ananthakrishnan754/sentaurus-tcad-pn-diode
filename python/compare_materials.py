@@ -78,65 +78,45 @@ LINESTYLES = {
 
 def parse_plt_file(filepath):
     """
-    Parse a Sentaurus Device .plt output file.
-    Returns a pandas DataFrame with columns named after
-    the electrical quantities (voltage, currents, etc.)
+    Parse a Sentaurus Device .plt output file (DF-ISE text format).
 
-    The .plt file has this structure:
-    # Sentaurus Device output
-    # ...
-    # Version ...
-    #---
-    "Anode OuterVoltage"  "Anode TotalCurrent"  "Cathode TotalCurrent"
-    0.0   1.23e-20   -1.23e-20
-    0.01  1.45e-20   -1.45e-20
-    ...
+    DF-ISE structure:
+      Info {
+        datasets = [ "time" "Cathode OuterVoltage" ... "Anode TotalCurrent" ... ]
+        functions = [ ... ]
+      }
+      Data {
+        <all values for all timesteps, 17 values per step across multiple lines>
+      }
+
+    Returns a pandas DataFrame with columns = dataset names.
     """
-    headers = []
-    data_rows = []
-    header_found = False
+    import re
 
-    with open(filepath, 'r') as f:
-        for line in f:
-            line = line.strip()
+    with open(filepath, "r") as f:
+        content = f.read()
 
-            # Skip empty lines
-            if not line:
-                continue
+    # --- Parse column names from datasets block ---
+    m = re.search(r"datasets\s*=\s*\[(.*?)\]", content, re.DOTALL)
+    if not m:
+        raise ValueError(f"No datasets block in {filepath}")
+    col_names = re.findall(r'"([^"]+)"', m.group(1))
+    n_cols = len(col_names)
 
-            # Skip comment lines (start with #)
-            if line.startswith('#'):
-                continue
+    # --- Parse numerical data from Data block ---
+    dm = re.search(r"Data\s*\{(.*?)\}", content, re.DOTALL)
+    if not dm:
+        raise ValueError(f"No Data block in {filepath}")
+    vals = np.array([float(v) for v in
+                     re.findall(r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?",
+                                dm.group(1))])
 
-            # The first non-comment, non-empty line = column headers
-            if not header_found:
-                # Column names are quoted strings
-                # e.g.: "Anode OuterVoltage" "Anode TotalCurrent"
-                import re
-                headers = re.findall(r'"([^"]+)"', line)
-                if headers:
-                    header_found = True
-                continue
+    if len(vals) % n_cols != 0:
+        raise ValueError(f"Data length {len(vals)} not divisible by {n_cols} cols in {filepath}")
 
-            # All subsequent lines = data
-            try:
-                values = [float(v) for v in line.split()]
-                if len(values) == len(headers):
-                    data_rows.append(values)
-            except ValueError:
-                continue
+    n_rows = len(vals) // n_cols
+    return pd.DataFrame(vals.reshape(n_rows, n_cols), columns=col_names)
 
-    if not headers or not data_rows:
-        raise ValueError(f"Could not parse file: {filepath}")
-
-    return pd.DataFrame(data_rows, columns=headers)
-
-
-# ============================================================
-# FUNCTION 2: EXTRACT KEY PARAMETERS FROM I-V DATA
-# From the parsed DataFrame, extract the important numbers
-# that go into the comparison table.
-# ============================================================
 
 def extract_parameters(df, material_name):
     """
@@ -153,7 +133,7 @@ def extract_parameters(df, material_name):
 
     # Find voltage and current columns
     # Column names in .plt are like "Anode OuterVoltage" and "Anode TotalCurrent"
-    volt_col = [c for c in df.columns if "Voltage" in c][0]
+    volt_col = [c for c in df.columns if "OuterVoltage" in c and "Anode" in c][0]
     curr_col = [c for c in df.columns if "TotalCurrent" in c and "Anode" in c][0]
 
     V = df[volt_col].values
@@ -168,8 +148,8 @@ def extract_parameters(df, material_name):
     V_rev = V[rev_mask]
     I_rev = I[rev_mask]
 
-    # --- Turn-on voltage: where |I| first exceeds 1 µA ---
-    threshold = 1e-6  # 1 µA
+    # --- Turn-on voltage: where |I| first exceeds 0.1 nA ---
+    threshold = 1e-10  # 0.1 nA
     turnon_idx = np.where(np.abs(I_fwd) > threshold)[0]
     if len(turnon_idx) > 0:
         params["Turn-on Voltage (V)"] = round(V_fwd[turnon_idx[0]], 3)
@@ -364,7 +344,7 @@ def main():
             all_params.append(params)
 
             # Store V, I arrays for overlay plot
-            volt_col = [c for c in df.columns if "Voltage" in c][0]
+            volt_col = [c for c in df.columns if "OuterVoltage" in c and "Anode" in c][0]
             curr_col = [c for c in df.columns if "TotalCurrent" in c and "Anode" in c][0]
             all_data[material] = (df[volt_col].values, df[curr_col].values)
 
