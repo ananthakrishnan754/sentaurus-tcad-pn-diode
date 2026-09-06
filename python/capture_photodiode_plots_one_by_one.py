@@ -23,7 +23,7 @@ def run_vbox_cmd(cmd_str):
     res = subprocess.run(full_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     return res.stdout, res.stderr
 
-print("Starting sequential single-plot Sentaurus Visual GUI captures...")
+print("Starting fresh sequential single-plot Sentaurus Visual GUI captures...")
 
 for tcl_script, output_filename in PLOTS:
     print(f"\n---> Processing {tcl_script} -> {output_filename}...")
@@ -42,9 +42,9 @@ for tcl_script, output_filename in PLOTS:
     )
     run_vbox_cmd(launch_cmd)
     
-    # Wait for SVisual GUI to open and render plot window
-    print("Waiting 5s for SVisual GUI window to render...")
-    time.sleep(5)
+    # Wait for SVisual GUI window to open and fully render plot window
+    print("Waiting 7s for SVisual GUI window to render...")
+    time.sleep(7)
     
     # 3. Capture full UI screenshot
     out_path_guest = f"/media/sf_swb/screenshots/{output_filename}"
@@ -55,10 +55,10 @@ for tcl_script, output_filename in PLOTS:
         f"xwd -root -out {out_xwd_guest} && convert {out_xwd_guest} {out_path_guest} && rm -f {out_xwd_guest}"
     )
     stdout, stderr = run_vbox_cmd(snap_cmd)
-    print(f"Captured: {output_filename}")
+    print(f"Captured fresh: {output_filename}")
 
     # Clean up svisual instance
     run_vbox_cmd("pkill -9 svisual 2>/dev/null || true")
     time.sleep(1)
 
-print("\nALL 6 INDIVIDUAL & COMBINED FULL-UI PLOTS CAPTURED SUCCESSFULLY!")
+print("\nALL 6 FRESH FULL-UI PLOTS CAPTURED SUCCESSFULLY!")

@@ -19,8 +19,8 @@ import os
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
 
 MATERIALS = {
-    "Silicon":   "Si_des.plt",
-    "Germanium": "Ge_des.plt",
+    "Silicon":   "Silicon_des.plt" if os.path.exists(os.path.join(RESULTS_DIR, "Silicon_des.plt")) else "Si_des.plt",
+    "Germanium": "Germanium_des.plt" if os.path.exists(os.path.join(RESULTS_DIR, "Germanium_des.plt")) else "Ge_des.plt",
     "GaAs":      "GaAs_des.plt",
     "4H-SiC":    "SiC4H_des.plt",
 }

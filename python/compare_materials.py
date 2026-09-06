@@ -43,10 +43,10 @@ RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # Map material name → expected .plt filename
-# Adjust these filenames to match your SWB project naming
+# Supports both Silicon_des.plt / Si_des.plt and Germanium_des.plt / Ge_des.plt
 MATERIALS = {
-    "Silicon":     "Si_des.plt",
-    "Germanium":   "Ge_des.plt",
+    "Silicon":     "Silicon_des.plt" if os.path.exists(os.path.join(RESULTS_DIR, "Silicon_des.plt")) else "Si_des.plt",
+    "Germanium":   "Germanium_des.plt" if os.path.exists(os.path.join(RESULTS_DIR, "Germanium_des.plt")) else "Ge_des.plt",
     "GaAs":        "GaAs_des.plt",
     "4H-SiC":      "SiC4H_des.plt",
 }
@@ -165,11 +165,9 @@ def extract_parameters(df, material_name):
             params[f"I at {v_check}V (A)"] = "N/A"
 
     # --- Reverse saturation current I0 at -1V ---
-    idx_1v = np.argmin(np.abs(V_rev - (-1.0)))
-    if abs(V_rev[idx_1v] - (-1.0)) < 0.1:
-        params["I0 at -1V (A)"] = f"{abs(I_rev[idx_1v]):.3e}"
-    else:
-        params["I0 at -1V (A)"] = "N/A"
+    sort_rev = np.argsort(V_rev)
+    I0_interp = np.interp(-1.0, V_rev[sort_rev], np.abs(I_rev[sort_rev]))
+    params["I0 at -1V (A)"] = f"{I0_interp:.3e}"
 
     # --- Breakdown voltage: where |reverse current| > 1 mA ---
     breakdown_threshold = 1e-3  # 1 mA
